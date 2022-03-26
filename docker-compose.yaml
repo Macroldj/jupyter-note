@@ -1,23 +1,24 @@
 version: '3'
 
 services:
-  django:
+  jupyter:
     build:
       context: .
-    image: account:v1.0.1
+    image: macroldj/jupyter-note:v1.0.1
     restart: "always"
     ports:
-      - '8888:8888'
+      - '9999:8888'
     deploy:
       mode: replicated
-      replicas: 3
+      replicas: 1
       resources:
         limits:
           cpus: '0.5'
           memory: 300m
     working_dir: /home/workspace
       - ./logs:/home/workspace/logs
-    command: ["jupyter", "notebook"]
+    command: ["jupyter", "notebook","--allow-root", "--ip=0.0.0.0"]
+    healthcheck:
       test: curl --fail http://localhost:8888||exit 1
       interval: 50s
       timeout: 5s
